@@ -13,6 +13,7 @@ body {
 }
 
 .pokedex {
+  font-family: 'Bebas Neue', cursive;
   display: flex;
   align-items: center;
   justify-content: center;

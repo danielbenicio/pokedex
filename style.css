@@ -6,6 +6,7 @@
 
 body {
   display: flex;
+
   justify-content: center;
   background-color: #231123;
   font-family: sans-serif;
@@ -16,7 +17,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 500px;
-  margin: 10rem;
+  margin: 10.1rem;
   width: 800px;
 }
 

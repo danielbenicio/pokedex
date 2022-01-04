@@ -8,9 +8,14 @@ const pokeTypeOne = document.querySelector('.poke-type-one')
 const pokeTypeTwo = document.querySelector('.poke-type-two')
 const pokeWeight = document.querySelector('.poke-weight')
 const pokeHeight = document.querySelector('.poke-height')
+const pokeListItems = document.querySelectorAll('.list-item')
+const leftButton = document.querySelector('.left-button')
+const rightButton = document.querySelector('.right-button')
+
 
 //Constants e Variables
-const apiURL = 'https://pokeapi.co/api/v2/pokemon/1'
+const apiLeftSideURL = 'https://pokeapi.co/api/v2/pokemon/1'
+const apiRightSideURL = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20'
 const TYPES = [
   'normal', 'fighting', 'flying',
   'poison', 'ground', 'rock',
@@ -30,9 +35,15 @@ const resetScreen = () => {
   }
 }
 
+const handleRightButtonCLick = e => {
+  console.log(e);
+}
+
 //Fetch
-const fetchData = async url  => {
-  const res = await fetch(`${apiURL}`)
+
+//get data for left side of screen
+const fetchLeftSide = async url  => { 
+  const res = await fetch(`${apiLeftSideURL}`)
   const data = await res.json()
   resetScreen()
 
@@ -55,7 +66,38 @@ const fetchData = async url  => {
   pokeFrontImage.src = data['sprites']['front_default'];
   pokeBackImage.src = data['sprites']['back_default'];
 }
-fetchData()
+
+//get data for right side of screen
+const fetchRightSide = async url => {
+  const res = await fetch(`${apiRightSideURL}`)
+  const data = await res.json()
+
+  const { results } = data;
+  console.log(results)
+
+  for (let i = 0; i < pokeListItems.length; i++) {
+    const pokeListItem = pokeListItems[i];
+    const resultData = results[i];
+
+    if(resultData) {
+      const { name, url } = resultData;
+      const urlArray = url.split('/')
+      const id = urlArray[urlArray.length - 2];
+      pokeListItem.textContent = id + '.' + name;
+    } else {
+      pokeListItems.textContent = '';
+    }
+  }
+}
+
+//adding event listeners
+// leftButton.addEventListener('click',);
+rightButton.addEventListener('click', handleRightButtonCLick);
+
+
+//Execute fetch functions
+fetchLeftSide()
+fetchRightSide()
 
 
 

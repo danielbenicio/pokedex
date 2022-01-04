@@ -6,16 +6,17 @@
 
 body {
   display: flex;
-  font-family: sans-serif;
   justify-content: center;
   background-color: #231123;
+  font-family: sans-serif;
 }
 
 .pokedex {
-  align-items: flex-end;
   display: flex;
+  align-items: center;
+  justify-content: center;
   height: 500px;
-  margin: 150px;
+  margin: 10rem;
   width: 800px;
 }
 

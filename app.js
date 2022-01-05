@@ -1,4 +1,4 @@
-//DOM Objects
+// -------------------- DOM Objects -------------------- \\
 const mainScreen = document.querySelector('.main-screen')
 const pokeName = document.querySelector('.poke-name');
 const pokeId = document.querySelector('.poke-id');
@@ -13,8 +13,8 @@ const leftButton = document.querySelector('.left-button')
 const rightButton = document.querySelector('.right-button')
 
 
-//Constants e Variables
-const apiLeftSideURL = 'https://pokeapi.co/api/v2/pokemon/1'
+// -------------------- Constants e Variables -------------------- \\
+const apiLeftSideURL = 'https://pokeapi.co/api/v2/pokemon/0'
 const apiRightSideURL = 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=20'
 const TYPES = [
   'normal', 'fighting', 'flying',
@@ -24,10 +24,10 @@ const TYPES = [
   'electric', 'psychic', 'ice',
   'dragon', 'dark', 'fairy'
 ];
+let prevUrl = null;
+let nextUrl = null; 
 
-//Functions
-const capitalize = (str) => str[0].toUpperCase() + str.substr(1);
-
+// -------------------- Functions -------------------- \\
 const resetScreen = () => {
   mainScreen.classList.remove('hide')
   for (const type of TYPES) {
@@ -35,12 +35,29 @@ const resetScreen = () => {
   }
 }
 
-const handleRightButtonCLick = e => {
-  console.log(e);
+const handleLeftButtonCLick = () => {
+  if (prevUrl) {
+    fetchRightSide(prevUrl)
+  }
 }
 
-//Fetch
+const handleRightButtonCLick = () => {
+  if (nextUrl) {
+    fetchRightSide(nextUrl); 
+  }
+}
 
+const handleListItemClick = e => {
+  if(!e.target) return;
+
+  const listItem = e.target;
+  if(!listItem.textContent) return;
+  const id = listItem.textContent.split('.')[0];
+  fetchPokeData(id)
+}
+
+
+// -------------------- Fetch -------------------- \\
 //get data for left side of screen
 const fetchLeftSide = async url  => { 
   const res = await fetch(`${apiLeftSideURL}`)
@@ -50,30 +67,30 @@ const fetchLeftSide = async url  => {
   const dataTypes = data['types'];
   const dataFirstType = dataTypes[0];
   const dataSecondType = dataTypes[1];
-  pokeTypeOne.textContent = capitalize(dataFirstType['type']['name']);
+  pokeTypeOne.textContent = dataFirstType['type']['name'];
   if(dataSecondType) {
     pokeTypeTwo.classList.remove('hide');
-    pokeTypeTwo.textContent = capitalize(dataSecondType['type']['name']);
+    pokeTypeTwo.textContent = dataSecondType['type']['name'];
   } else {
     pokeTypeTwo.classList.add('hide');
     pokeTypeTwo.textContent = '';
   }
   mainScreen.classList.add(dataFirstType['type']['name']);
-  pokeName.textContent = capitalize(data['name']);
+  pokeName.textContent = data['name'];
   pokeId.textContent = '#' + data['id'].toString().padStart(3, '0');
   pokeWeight.textContent = data['weight'];
   pokeHeight.textContent = data['height'];
   pokeFrontImage.src = data['sprites']['front_default'];
   pokeBackImage.src = data['sprites']['back_default'];
 }
-
 //get data for right side of screen
 const fetchRightSide = async url => {
-  const res = await fetch(`${apiRightSideURL}`)
+  const res = await fetch(url)
   const data = await res.json()
 
-  const { results } = data;
-  console.log(results)
+  const { results, previous, next } = data;
+  prevUrl = previous;
+  nextUrl = next;
 
   for (let i = 0; i < pokeListItems.length; i++) {
     const pokeListItem = pokeListItems[i];
@@ -90,29 +107,42 @@ const fetchRightSide = async url => {
   }
 }
 
-//adding event listeners
-// leftButton.addEventListener('click',);
+const fetchPokeData = async id => {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+  const data = await res.json()
+  resetScreen()
+
+  const dataTypes = data['types'];
+  const dataFirstType = dataTypes[0];
+  const dataSecondType = dataTypes[1];
+  pokeTypeOne.textContent = dataFirstType['type']['name'];
+  if(dataSecondType) {
+    pokeTypeTwo.classList.remove('hide');
+    pokeTypeTwo.textContent = dataSecondType['type']['name'];
+  } else {
+    pokeTypeTwo.classList.add('hide');
+    pokeTypeTwo.textContent = '';
+  }
+  mainScreen.classList.add(dataFirstType['type']['name']);
+  pokeName.textContent = data['name'];
+  pokeId.textContent = '#' + data['id'].toString().padStart(3, '0');
+  pokeWeight.textContent = data['weight'];
+  pokeHeight.textContent = data['height'];
+  pokeFrontImage.src = data['sprites']['front_default'];
+  pokeBackImage.src = data['sprites']['back_default'];
+}
+
+
+// -------------------- Event Listener -------------------- \\
+leftButton.addEventListener('click', handleLeftButtonCLick);
 rightButton.addEventListener('click', handleRightButtonCLick);
+for (const pokeListItem of pokeListItems ) {
+  pokeListItem.addEventListener('click', handleListItemClick)
+}
 
 
-//Execute fetch functions
+// -------------------- Initialize -------------------- \\
 fetchLeftSide()
-fetchRightSide()
-
-
-
-
-
-
-
-
-
-
-// fetch('https://pokeapi.co/api/v2/pokemon/1') //res => response
-//   .then(res => res.json())
-//   .then(data => {
-//     console.log(data)
-//   })
-
+fetchRightSide('https://pokeapi.co/api/v2/pokemon?offset=0&limit=20')
 
 

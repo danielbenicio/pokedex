@@ -7,5 +7,5 @@
 
 - `git clone https://github.com/danielusi/pokedex-api.git`
 
-- Clique com o botão direito no arquivo `index.html` e, em seguida, selecionando a opção `Abrir Com` e selecionando o navegador de sua preferência.
+- Clique com o botão direito no arquivo `index.html` e, selecione a opção `Abrir Com` e selecione o navegador de sua preferência.
 

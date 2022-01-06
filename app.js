@@ -76,7 +76,7 @@ const fetchLeftSide = async url => {
     pokeTypeTwo.classList.add('hide');
     pokeTypeTwo.textContent = '';
   }
-  resetType()
+  resetType();
   pokeName.textContent = data['name'];
   pokeId.textContent = '#' + data['id'].toString().padStart(3, '0');
   pokeFrontImage.src = data['sprites']['front_default'];
